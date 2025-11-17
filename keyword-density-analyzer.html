@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Keyword Density Analyzer — WordCalculator.net</title>
+  <meta name="description" content="Analyze keyword frequency and density in your content with this free Keyword Density Analyzer.">
+
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+  <!-- Shared CSS -->
+  <link rel="stylesheet" href="tools.css" />
+
+  <style>
+    .kda-main {
+      max-width: 1200px;
+      margin: 24px auto 40px;
+      padding: 0 15px;
+    }
+
+    .kda-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: 18px;
+      align-items: flex-start;
+    }
+
+    .kda-card {
+      background: #ffffff;
+      border-radius: 14px;
+      border: 1px solid #e2e8f0;
+      padding: 14px 14px 12px;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+    }
+
+    .kda-card h2 {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: #0f172a;
+    }
+
+    .kda-card p.lead {
+      font-size: 13px;
+      color: #4b5563;
+      margin-bottom: 10px;
+    }
+
+    .kda-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 14px;
+      margin-top: 10px;
+    }
+
+    .kda-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .kda-field label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    .kda-input,
+    .kda-textarea {
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      padding: 8px 10px;
+      font-size: 14px;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .kda-input:focus,
+    .kda-textarea:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.12);
+    }
+
+    .kda-textarea {
+      min-height: 180px;
+      resize: vertical;
+      grid-column: 1 / -1;
+    }
+
+    .kda-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-top: 6px;
+    }
+
+    .kda-options label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #4b5563;
+      cursor: pointer;
+    }
+
+    .kda-actions {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .kda-btn {
+      padding: 8px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid #d1d5db;
+      background: #f3f4f6;
+      cursor: pointer;
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .kda-btn.primary {
+      background: #2563eb;
+      border-color: #2563eb;
+      color: #ffffff;
+    }
+
+    .kda-btn.primary:hover {
+      background: #1d4ed8;
+    }
+
+    .kda-btn:hover {
+      background: #e5e7eb;
+    }
+
+    .kda-note {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 6px;
+    }
+
+    .kda-results {
+      background: #020617;
+      border-radius: 14px;
+      padding: 14px;
+      color: #e5e7eb;
+      border: 1px solid #1f2937;
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.6);
+    }
+
+    .kda-summary-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 8px;
+      margin-bottom: 10px;
+    }
+
+    .kda-summary-item {
+      background: #020617;
+      border-radius: 10px;
+      border: 1px solid #1f2937;
+      padding: 8px;
+      text-align: left;
+    }
+
+    .kda-summary-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+      margin-bottom: 2px;
+    }
+
+    .kda-summary-value {
+      font-size: 15px;
+      font-weight: 800;
+      color: #e5e7eb;
+    }
+
+    .kda-summary-sub {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 2px;
+    }
+
+    .kda-status {
+      margin-top: 6px;
+      font-size: 13px;
+      color: #e5e7eb;
+    }
+
+    .kda-focus-wrap {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #e5e7eb;
+    }
+
+    .kda-focus-wrap h3 {
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .kda-focus-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .kda-focus-chip {
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      padding: 3px 8px;
+      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .kda-focus-chip span.value {
+      font-weight: 600;
+    }
+
+    .kda-focus-chip span.meta {
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    .kda-table-wrap {
+      margin-top: 10px;
+      max-height: 360px;
+      overflow: auto;
+      border-radius: 10px;
+      border: 1px solid #1f2937;
+      background: #020617;
+    }
+
+    table.kda-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      min-width: 100%;
+    }
+
+    table.kda-table thead {
+      position: sticky;
+      top: 0;
+      background: #020617;
+      z-index: 1;
+    }
+
+    table.kda-table th,
+    table.kda-table td {
+      padding: 7px 8px;
+      border-bottom: 1px solid #111827;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    table.kda-table th {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+    }
+
+    table.kda-table td {
+      color: #e5e7eb;
+    }
+
+    table.kda-table tr:nth-child(even) td {
+      background: #030712;
+    }
+
+    .kda-table-empty {
+      padding: 10px;
+      text-align: center;
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    .kda-badge {
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      padding: 2px 7px;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #9ca3af;
+    }
+
+    .kda-badge-strong {
+      border-color: #22c55e;
+      color: #bbf7d0;
+    }
+
+    .kda-badge-medium {
+      border-color: #eab308;
+      color: #facc15;
+    }
+
+    .kda-badge-weak {
+      border-color: #f97316;
+      color: #fed7aa;
+    }
+
+    @media (max-width: 900px) {
+      .kda-layout {
+        grid-template-columns: 1fr;
+      }
+      .kda-grid {
+        grid-template-columns: 1fr;
+      }
+      .kda-summary-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header (same as all tools) -->
+  <header class="wc-header">
+    <div class="wc-wrap">
+      <a class="wc-logo" href="https://wordcalculator.net">
+        <span class="wc-slab slab-w">W</span>
+        <span class="wc-slab slab-o">O</span>
+        <span class="wc-slab slab-r">R</span>
+        <span class="wc-slab slab-d">D</span>
+        <span class="wc-brand-text">Calculator<small class="wc-tagline">Every Word Counts</small></span>
+      </a>
+
+      <nav class="wc-nav">
+        <a href="https://wordcalculator.net" class="wc-link">Home</a>
+        <a href="tools.html" class="wc-link">Tools</a>
+        <a href="#about" class="wc-link">About Us</a>
+      </nav>
+
+      <button class="mobile-menu-btn" id="mobileMenuBtn">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+
+    <nav class="mobile-nav" id="mobileNav">
+      <div class="mobile-nav-header">
+        <a class="wc-logo" href="https://wordcalculator.net">
+          <span class="wc-slab slab-w">W</span>
+          <span class="wc-slab slab-o">O</span>
+          <span class="wc-slab slab-r">R</span>
+          <span class="wc-slab slab-d">D</span>
+          <span class="wc-brand-text">Calculator</span>
+        </a>
+        <button class="mobile-close-btn" id="mobileCloseBtn">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="mobile-nav-links">
+        <a href="https://wordcalculator.net" class="nav-link mobile-link">Home</a>
+        <a href="tools.html" class="nav-link mobile-link">Tools</a>
+        <a href="#about" class="nav-link mobile-link">About Us</a>
+      </div>
+    </nav>
+    <div class="mobile-overlay" id="mobileOverlay"></div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="kda-main">
+
+    <!-- Hero section -->
+    <section class="tools-hero">
+      <div class="tools-hero-inner">
+        <div class="tools-hero-text">
+          <h1>Keyword Density Analyzer</h1>
+          <p>Analyze how often keywords appear in your content and optimize for SEO-friendly density.</p>
+
+          <div class="tools-meta-row">
+            <span><i class="fas fa-key"></i> Keyword density</span>
+            <span><i class="fas fa-align-left"></i> Content analysis</span>
+            <span><i class="fas fa-chart-pie"></i> SEO insights</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tool Layout -->
+    <section class="kda-layout">
+
+      <!-- LEFT SIDE: Input -->
+      <div class="kda-card">
+        <h2>Paste your content</h2>
+        <p class="lead">Add your text and optional focus keywords to calculate density.</p>
+
+        <form id="kdaForm">
+          <div class="kda-grid">
+            <div class="kda-field">
+              <label for="kdaKeywords">
+                Focus keywords (optional)
+              </label>
+              <input
+                type="text"
+                id="kdaKeywords"
+                class="kda-input"
+                placeholder="e.g. content writing, keyword density"
+              />
+            </div>
+
+            <div class="kda-field">
+              <label for="kdaMinLength">
+                Minimum word length
+              </label>
+              <input
+                type="number"
+                id="kdaMinLength"
+                class="kda-input"
+                min="1"
+                value="2"
+              />
+            </div>
+
+            <div class="kda-field" style="grid-column: 1 / -1;">
+              <label for="kdaText">
+                Text to analyze
+              </label>
+              <textarea
+                id="kdaText"
+                class="kda-textarea"
+                placeholder="Paste or write your content here..."
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="kda-options">
+            <label>
+              <input type="checkbox" id="kdaExcludeStopwords" checked />
+              Exclude common English stopwords (the, and, of, to, etc.)
+            </label>
+            <label>
+              <input type="checkbox" id="kdaIncludeNumbers" />
+              Treat numbers as words
+            </label>
+          </div>
+
+          <div class="kda-actions">
+            <button type="submit" class="kda-btn primary">
+              <i class="fas fa-chart-bar"></i> Analyze
+            </button>
+            <button type="button" id="kdaClearBtn" class="kda-btn">
+              <i class="fas fa-eraser"></i> Clear
+            </button>
+          </div>
+
+          <p class="kda-note">
+            All calculations run in your browser. No data is uploaded or stored on the server.
+          </p>
+        </form>
+      </div>
+
+      <!-- RIGHT SIDE: Results -->
+      <div class="kda-results">
+        <h2>Analysis</h2>
+
+        <div class="kda-summary-row">
+          <div class="kda-summary-item">
+            <div class="kda-summary-label">Total words</div>
+            <div id="kdaTotalWords" class="kda-summary-value">0</div>
+            <div class="kda-summary-sub">After filtering length/stopwords</div>
+          </div>
+          <div class="kda-summary-item">
+            <div class="kda-summary-label">Unique words</div>
+            <div id="kdaUniqueWords" class="kda-summary-value">0</div>
+            <div class="kda-summary-sub">Distinct terms</div>
+          </div>
+          <div class="kda-summary-item">
+            <div class="kda-summary-label">Top keyword density</div>
+            <div id="kdaTopDensity" class="kda-summary-value">0%</div>
+            <div class="kda-summary-sub">Highest single word</div>
+          </div>
+        </div>
+
+        <div id="kdaStatus" class="kda-status">
+          Paste your content and click “Analyze” to see keyword density.
+        </div>
+
+        <div id="kdaFocusWrap" class="kda-focus-wrap" style="display:none;">
+          <h3>Focus keyword overview</h3>
+          <div id="kdaFocusList" class="kda-focus-list"></div>
+        </div>
+
+        <div class="kda-table-wrap" id="kdaTableWrap">
+          <!-- Table injected by JS -->
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Footer (same as all tools) -->
+  <footer class="pro-footer" id="about">
+    <div class="pf-wrap">
+      <div class="pf-brand">
+        <div class="pf-logo">
+          <span class="slab slab-w">W</span>
+          <span class="slab slab-o">O</span>
+          <span class="slab slab-r">R</span>
+          <span class="slab slab-d">D</span>
+          <div class="pf-brand-text">WordCalculator<span>.net</span></div>
+        </div>
+        <p class="pf-tag">A focused, distraction-free toolkit for precise writing.</p>
+      </div>
+
+      <div class="pf-cols">
+        <div class="pf-col"><h5>Product</h5></div>
+        <div class="pf-col"><h5>Resources</h5></div>
+        <div class="pf-col"><h5>Company</h5></div>
+        <div class="pf-col"><h5>Legal</h5></div>
+      </div>
+    </div>
+    <div class="pf-bottom">
+      <div class="pf-bottom-wrap">
+        <div>© <span id="pf-year"></span> WordCalculator.net — All rights reserved.</div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Shared + Page Scripts -->
+  <script src="tools.js"></script>
+  <script src="keyword-density-analyzer.js"></script>
+</body>
+</html>
